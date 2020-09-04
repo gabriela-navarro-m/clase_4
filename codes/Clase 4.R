@@ -82,12 +82,12 @@ rm(list = ls())
 #### 2.1 Cargar bases de datos
 browseURL(url = "https://www.dane.gov.co/index.php/estadisticas-por-tema/demografia-y-poblacion/proyecciones-de-poblacion", browser = getOption("browser")) # Fuente: DANE
 dane = readRDS(file = 'data/originales/proyecciones DANE.rds') %>% 
-       dplyr::select(., name_codigo , year , total_poblacion , codigo)
+       dplyr::select(.,name_codigo , year , total_poblacion , codigo)
 
 #### 2.2 Generar variables en un dataframe
 dane$dummy = 1
 
-dane = mutate(dane , colombia = 1) 
+dane = mutate(dane , colombia = 1 ) 
 
 #### 2.2.1 Generar variable usando el codigo dane
 nchar('Hola')
@@ -116,4 +116,13 @@ dane_mpio = mutate(dane_mpio , name = gsub(pattern = " -",replacement = "" ,x = 
 #### 2.3 Exportar la base de datos
 dane_mpio = dane_mpio[,c('codigo','name','year','total_poblacion')]
 saveRDS(object = dane_mpio , file = "data/procesados/proyecciones DANE.rds")
+
+
+
+
+
+
+
+
+
 

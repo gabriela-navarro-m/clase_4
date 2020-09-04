@@ -435,7 +435,17 @@ li {
 <div id="ejercicios-proyecciones-población" class="section level1">
 <h1>2. Ejercicios proyecciones población</h1>
 <ul>
-<li><p>De la carpeta <code>task/data/</code> de este repositorio, importe la base de datos <code>censo 2018.rds</code>.</p></li>
+<li>De la carpeta <code>task/data/</code> de este repositorio, importe la base de datos <code>censo 2018.rds</code>.</li>
+</ul>
+<pre><code># Si usted quiere puede cargar los datos en CSV y limpiarlos corriendo este código
+
+censo = read.csv2(file = &#39;task/data/censo 2018.csv&#39;,sep = &#39;,&#39;,stringsAsFactors = F)
+censo = censo[,c(2,4,7)]
+colnames(censo) = c(&#39;cod_dane&#39;,&#39;name_muni&#39;,&#39;poblacion&#39;)
+censo = censo[nchar(censo$cod_dane)&gt;2,] %&gt;% .[7:(nrow(.)-3),]
+censo$poblacion = as.numeric(censo$poblacion)
+saveRDS(object = censo, file = &#39;task/data/censo 2018.rds&#39;)</code></pre>
+<ul>
 <li><p>De la carpeta <code>data/procesados/</code> de este repositorio, importe la base de datos <code>proyecciones DANE.rds</code>. Posteriormente filtre unicamente el año 2018.</p></li>
 <li><p>Usando la funcion <code>merge</code> una estos dos objetos.</p></li>
 <li><p>Calcule la diferencia entre la población del censo y la de poblacion de la base de datos de proyecciones.</p></li>

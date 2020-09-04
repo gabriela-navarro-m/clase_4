@@ -72,6 +72,17 @@ knitr::opts_chunk$set(echo = T , eval = T , warning = T)
 
 * De la carpeta ```task/data/``` de este repositorio, importe la base de datos ```censo 2018.rds```.
 
+```
+# Si usted quiere puede cargar los datos en CSV y limpiarlos corriendo este código
+
+censo = read.csv2(file = 'task/data/censo 2018.csv',sep = ',',stringsAsFactors = F)
+censo = censo[,c(2,4,7)]
+colnames(censo) = c('cod_dane','name_muni','poblacion')
+censo = censo[nchar(censo$cod_dane)>2,] %>% .[7:(nrow(.)-3),]
+censo$poblacion = as.numeric(censo$poblacion)
+saveRDS(object = censo, file = 'task/data/censo 2018.rds')
+```
+
 * De la carpeta ```data/procesados/``` de este repositorio, importe la base de datos ```proyecciones DANE.rds```. Posteriormente filtre unicamente el año 2018.
 
 * Usando la funcion ```merge``` una estos dos objetos.
