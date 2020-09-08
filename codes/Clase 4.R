@@ -35,11 +35,11 @@ rstudioapi::viewer(url = "help/Help-Merge.html")
 #### 1.1 Cargar bases de datos
 browseURL(url = "http://microdatos.dane.gov.co/index.php/catalog/659/get_microdata", browser = getOption("browser")) # Fuente: DANE
 
-cg_cabecera = read.csv2(file = "data/originales/Cabecera - Caracteristicas generales (Personas).csv" , header = T , sep = ';')
-deso_cabecera = read.csv2(file = "data/originales/Cabecera - Desocupados.csv" , header = T , sep = ';')
+cg_cabecera = read.csv2(file = "data/original/Cabecera - Caracteristicas generales (Personas).csv" , header = T , sep = ';')
+deso_cabecera = read.csv2(file = "data/original/Cabecera - Desocupados.csv" , header = T , sep = ';')
 
-cg_resto = read.csv2(file = "data/originales/Resto - Caracteristicas generales (Personas).csv" , header = T , sep = ';')
-deso_resto = read.csv2(file = "data/originales/Resto - Desocupados.csv" , header = T , sep = ';')
+cg_resto = read.csv2(file = "data/original/Resto - Caracteristicas generales (Personas).csv" , header = T , sep = ';')
+deso_resto = read.csv2(file = "data/original/Resto - Desocupados.csv" , header = T , sep = ';')
 
 
 #### 1.2 Hacer merge de las bases de datos
@@ -81,7 +81,7 @@ rm(list = ls())
 
 #### 2.1 Cargar bases de datos
 browseURL(url = "https://www.dane.gov.co/index.php/estadisticas-por-tema/demografia-y-poblacion/proyecciones-de-poblacion", browser = getOption("browser")) # Fuente: DANE
-dane = readRDS(file = 'data/originales/proyecciones DANE.rds') %>% 
+dane = readRDS(file = 'data/original/proyecciones DANE.rds') %>% 
        dplyr::select(.,name_codigo , year , total_poblacion , codigo)
 
 #### 2.2 Generar variables en un dataframe
