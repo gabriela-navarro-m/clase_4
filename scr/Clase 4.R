@@ -7,45 +7,45 @@
 rm(list = ls()) # limpia el entorno de R
 pacman::p_load(tidyverse,readxl,haven) # cargar y/o instalar paquetes a usar
 
-# tydyverse
+# tydyverse- grupos de paquetes o librerias para trabajar con dataframes ya procesada- sirve para usar dataframes 
 browseURL(url = "https://www.tidyverse.org", browser = getOption("browser"))
 
 #----------------#
-# 1. Data Tyding #
+# 1. Data Tyding # Limpieza de bases de datos- tal cual como llegan de internet- data es de internet y output es ya lista
 #----------------#
 
 #### 1.1 Cargar bases de datos
 browseURL(url = "https://www.dane.gov.co/index.php/estadisticas-por-tema/demografia-y-poblacion/proyecciones-de-poblacion", browser = getOption("browser")) # Fuente: DANE
-dane = readRDS(file = 'data/input/proyecciones DANE.rds') %>% # Explicar para que sirve pipe
-       dplyr::select(.,name_codigo , year , total_poblacion , codigo)
+dane = readRDS(file = 'data/input/proyecciones DANE.rds') %>% # %>% es f'' de x o hacer dos cosas en la misma línea {aplicar dos funciones a un elemento a la misma vez}- eradRDS es para leer las bases de datos en ese formato 
+       dplyr::select(.,name_codigo , year , total_poblacion , codigo) #seleccionar variables especificas de la base tipo keep de stata- poner dplyr:: para que se tome el select de ese paquete | el primer punto sirve para ver el tipo de objeto al que se le aplica (.)
 
 #### 1.2 Generar variables en un dataframe
-dane$dummy = 1
+dane$dummy = 1 #al poner $ se pone la variable
 
-dane = mutate(dane , colombia = 1 ) 
+dane = mutate(dane , colombia = 1 ) #añadir una columna llamada colombia que meta 1 en todas las filas
 
 #### 1.2.1 Generar variable usando el codigo dane
-nchar('Hola')
+nchar('Hola') #devuelve numero de caracteres que tiene cadena de caracteres- para crear variables condicionales
 
-dane = mutate(dane , depto = ifelse(test = nchar(codigo) == 2 , yes = 1 , no = 0)) # Crear variable usando mutate
-
+dane = mutate(dane , depto = ifelse(test = nchar(codigo) == 2 , yes = 1 , no = 0)) # Crear variable usando mutate- ifelse (aplicar, que debe escribir si aplica, que debe escribir si no) todas las que tengan 2 caracteres son municipios y las demás no
+#al usar mutate no toca volver a decir que es de dane 
 dane$codigo # vector 
-dane$mpio = ifelse(test =  nchar(dane$codigo) > 2 , yes = 1, no = 0) # Crear variable usando vector
+dane$mpio = ifelse(test =  nchar(dane$codigo) > 2 , yes = 1, no = 0) # Crear variable usando vector- al reves
 
 #### 1.2.2 Rellenar con el nombre del municipio
-dane_mpio = subset(dane , mpio == 1)
+dane_mpio = subset(dane , mpio == 1) #todas las observaciones de dane que tienen los municipios- solamente - mini base de datos- filtrar base de datos  
 
-substr(x = 'Hola' , start = 2, stop = 4) # Veamos la funcion substr()
-str_locate(string = "Hola - todos" ,pattern = '-') # Veamos la funcion str_locate()
+substr(x = 'Hola' , start = 2, stop = 4) #funcion substr() mete cadena y desde que posicion a cual devolver los caracteres- desde o hasta a
+str_locate(string = "Hola - todos" ,pattern = '-') #funcion str_locate() devuelve la ubicacion en la que esta un caracter en una cadena de caracteres: el - esta en la posicion 6
 
-dane_mpio = mutate(dane_mpio , name = substr(x =  name_codigo ,start = 1 , stop =  str_locate(string = name_codigo,pattern = '-')))
+dane_mpio = mutate(dane_mpio , name = substr(x =  name_codigo ,start = 1 , stop =  str_locate(string = name_codigo,pattern = '-'))) #para que devuleva solamente el nombre sin el codigo: que devuelva los caracteres desde inicio hasta donde se encuentre el -
 
 dane_mpio = dane_mpio %>% group_by(codigo) %>% fill(name, .direction = "down") # default rellena con el valor anterior
 
 #### 1.2.3 Limpiar el nombre del municipio
-gsub(pattern = "ol",replacement = "-",x = "Hola") # Veamos la funcion gsub()
+gsub(pattern = "ol",replacement = "-",x = "Hola") # gsub es para reemplazar
 
-dane_mpio = mutate(dane_mpio , name = gsub(pattern = " -",replacement = "" ,x = name))
+dane_mpio = mutate(dane_mpio , name = gsub(pattern = " -",replacement = "" ,x = name)) 
 
 #### 1.3 Exportar la base de datos
 dane_mpio = dane_mpio[,c('codigo','name','year','total_poblacion')]
@@ -78,7 +78,7 @@ colnames(data)[c(2,3,9)]
 data_rdata_3 = data[,c(2,3,9)] # Usando el vector de los nombres
 
 #### 2.1.2.1 Veamos la funcion grep
-grep(pattern = 'la' , x = c('Hola','Pola','Nada','Todo'))
+grep(pattern = 'la' , x = c('Hola','Pola','Nada','Todo')) #poner cadena y vector para ver cuales elementos tienen esa cadena 
 
 grep(pattern = 'municipio' , x = colnames(data))
 
@@ -88,21 +88,21 @@ data_4 = data[,nombres]
 
 
 #### 2.2 Filtrar filas de un dataframe
-rm(list = ls())
+rm(list = ls()) #limpiar environment 
 df = readRDS("data/output/proyecciones DANE.rds")
 
 # Vamos a sellecionar solo algunas columnas del dataframe data
-colnames(df) = c('cod_dane','name_muni','year','poblacion')
+colnames(df) = c('cod_dane','name_muni','year','poblacion') #renombrar
 df
 
 #### 2.2.1 Usando la posicion de las filas
-df_1a = df[1:953,]
+df_1a = df[1:953,] #primeras 953 obs
 
 nrow(df)
-df_1b = df[17000:nrow(df),]
+df_1b = df[17000:nrow(df),] #ultimas 953
 
 #### 2.2.2 Usando los atributos de la variable
-df_2 = subset(x = df, subset = is.na(name_muni) == F)
+df_2 = subset(x = df, subset = is.na(name_muni) == F) #sustraer solo las observaciones no sean NA o sea sean un logic del dataframe
 
 df_3 = subset(x = df, subset =  poblacion > 100000)
 
